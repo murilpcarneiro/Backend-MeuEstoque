@@ -1,0 +1,1 @@
+import"dotenv/config";import s from"express";var o=s();o.use(s.json());o.get("/",(r,n)=>{n.send("Hello World!")});var e=process.env.PORT||3e3;o.listen(e,()=>{console.log(`Server is running on port ${e}`)});
