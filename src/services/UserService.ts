@@ -31,3 +31,20 @@ export const loginUser = async (email: string, password: string) => {
   const token = jwt.sign({id: user.id}, JWT_SECRET, {expiresIn: '1h'});
   return {user, token};
 }
+
+export const getAutheticatedUser = async (token : string) => {
+  if (!token) {
+    throw new Error('No token provided');
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
+    const [user] = await db.select().from(users).where(eq(users.id, decoded.id));
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user;
+  } catch (error) {
+    throw new Error('Invalid token');
+  }
+}
