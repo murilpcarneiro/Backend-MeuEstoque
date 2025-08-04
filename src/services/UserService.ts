@@ -1,5 +1,6 @@
 import bycrypt from 'bcrypt';
 import { db } from 'db/config/db';
+import { eq } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 import { users } from 'models/User';
 
@@ -14,4 +15,19 @@ export const createUser = async (name: string, email: string, password: string) 
   }).returning();
   const token = jwt.sign({id: user.id}, JWT_SECRET, {expiresIn: '1h'});
   return {user, token}
+}
+
+export const loginUser = async (email: string, password: string) => {
+  const [user] = await db.select().from(users).where(eq(users.email,email));
+  if (!user) {
+    throw new Error('User not found');
+  }
+  
+  const match = await bycrypt.compare(password, user.password);
+  if (!match) {
+    throw new Error('Invalid password');
+  }
+
+  const token = jwt.sign({id: user.id}, JWT_SECRET, {expiresIn: '1h'});
+  return {user, token};
 }
