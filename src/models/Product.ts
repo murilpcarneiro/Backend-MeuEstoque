@@ -1,5 +1,5 @@
 import { foreignKey, integer, pgTable, uuid, varchar } from "drizzle-orm/pg-core";
-import { estoque } from "./Estoque";
+import { estoques } from "./Estoque";
 
 export const produtos = pgTable("produtos", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -13,7 +13,7 @@ export const produtos = pgTable("produtos", {
 }, (table) => ({
   fkEstoque: foreignKey({
     columns: [table.estoqueId],
-    foreignColumns: [estoque.id],
+    foreignColumns: [estoques.id],
     name: "fk_produtos_estoque",
   })
 }));

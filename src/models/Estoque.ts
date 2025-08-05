@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { foreignKey, pgTable, uuid, varchar } from "drizzle-orm/pg-core";
 import { users } from "./User";
 
-export const estoque = pgTable("estoque", {
+export const estoques = pgTable("estoques", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 255 }).notNull(),
   código: varchar("codigo", { length: 50 }).notNull().unique().default(sql`floor(random()*9000 + 1000)::int`),
