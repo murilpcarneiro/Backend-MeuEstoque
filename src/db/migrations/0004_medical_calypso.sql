@@ -1,0 +1,1 @@
+ALTER TABLE "estoque_users" ADD CONSTRAINT "fk_estoque_users_estoque" FOREIGN KEY ("estoque_id") REFERENCES "public"."estoques"("id") ON DELETE no action ON UPDATE no action;

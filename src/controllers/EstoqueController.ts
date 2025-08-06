@@ -8,11 +8,18 @@ interface DecodedToken {
   exp: number;
 }
 
+const getUserIdFromToken = (token: string): string => {
+  const decoded = jwtDecode(token) as DecodedToken;
+  return decoded.id;
+};
+
 export const createEstoque = async(req: Request, res: Response) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  const decoded = jwtDecode(token as string) as DecodedToken;
-  const userId = decoded.id;
+  const userId = getUserIdFromToken(req.headers.authorization?.split(" ")[1] || "");
   const { name } = req.body;
+
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized. No user ID found in token." });
+  }
 
   if (!name) {
     return res.status(400).json({ error: "Name is required." });
@@ -20,8 +27,28 @@ export const createEstoque = async(req: Request, res: Response) => {
 
   try {
     const { estoque } = await EstoqueService.createNewEstoque(name, userId);
-    res.status(201).json({ id: estoque.id, name: estoque.name, userId: estoque.userId });
+    res.status(201).json({ id: estoque.id, name: estoque.name, codigo: estoque.codigo });
   } catch (error) {
     res.status(500).json({ error: "An error occurred while creating the stock.", errorMessage: error });
+  }
+}
+
+export const joinEstoque = async(req: Request, res: Response) => {
+  const userId = getUserIdFromToken(req.headers.authorization?.split(" ")[1] || "");
+  const {codigo} = req.body;
+
+  if(!userId) {
+    return res.status(401).json({ error: "Unauthorized. No user ID found in token." });
+  }
+
+  if (!codigo) {
+    return res.status(400).json({ error: "Codigo is required." });
+  }
+
+  try {
+    const { estoque } = await EstoqueService.joinEstoque(codigo, userId);
+    res.status(200).json({ id: estoque.id, name: estoque.name, codigo: estoque.codigo });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
   }
 }
