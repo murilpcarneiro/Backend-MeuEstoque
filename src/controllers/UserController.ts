@@ -10,7 +10,7 @@ export const register = async (req: Request, res: Response) => {
 
   try {
     const { user, token } = await UserService.createUser(name, email, password);
-    res.status(201).json({id:user.id, name: user.name, email: user.email, token });
+    res.status(201).json({user: { id:user.id, name: user.name, email: user.email }, token });
   } catch (error) {
     res.status(500).json({ error: "An error occurred while creating the user." });
   }
@@ -26,7 +26,7 @@ export const login = async (req: Request, res: Response) => {
 
   try {
     const { user, token } = await UserService.loginUser(email, password);
-    res.status(200).json({token, user: {id: user.id, name: user.name, email: user.email}});
+    res.status(200).json({user: { id: user.id, name: user.name, email: user.email }, token});
   } catch (error: any) {
     res.status(401).json({error: error.message})
   }

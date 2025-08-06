@@ -37,3 +37,12 @@ export const joinEstoque = async (codigo: string, userId: string) => {
 
   return {estoque};
 }
+
+export const getUserEstoques = async (userId: string) => {
+  const userEstoques = await db.select().from(estoques)
+    .innerJoin(estoqueUsers, eq(estoques.id, estoqueUsers.estoqueId))
+    .where(eq(estoqueUsers.userId, userId))
+    .orderBy(estoques.name);
+
+  return { estoques: userEstoques.map((row) => row.estoques) };
+}
