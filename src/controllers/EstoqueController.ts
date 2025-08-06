@@ -67,3 +67,19 @@ export const getUserEstoques = async(req: Request, res: Response) => {
     res.status(500).json({ error: "An error occurred while fetching user stocks.", errorMessage: error });
   }
 }
+
+export const getEstoqueById = async(req: Request, res: Response) => {
+  const userId = getUserIdFromToken(req.headers.authorization?.split(" ")[1] || "");
+  const { estoqueId } = req.params;
+
+  if (!estoqueId) {
+    return res.status(400).json({ error: "Estoque ID is required." });
+  }
+
+  try {
+    const estoque = await EstoqueService.getEstoqueById(estoqueId, userId)
+    res.status(200).json({ estoque: { id: estoque.id, name: estoque.name, codigo: estoque.codigo } });
+  } catch (error) {
+    res.status(404).json({ error: "Estoque not found." });
+  }
+}
