@@ -104,10 +104,27 @@ export const changeEstoqueName = async (req: Request, res: Response) => {
   try {
     const {estoques} = await EstoqueService.changeEstoqueName(estoqueId, name, userId);
     res.status(200).json({ message: "Estoque name updated successfully.", estoque: { id: estoques.id, name } });
-  
   } catch (error: any) {
     res.status(500).json({ error: "An error occurred while changing the stock name.", errorMessage: error });
   }
+}
 
+export const deleteEstoque = async (req: Request, res: Response) => {
+  const userId = getUserIdFromToken(req.headers.authorization?.split(" ")[1] || "");
+  const {estoqueId} = req.params;
 
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized. No user ID found in token." });
+  }
+
+  if (!estoqueId) {
+    return res.status(400).json({ error: "Estoque ID is required." });
+  }
+
+  try {
+    const response = await EstoqueService.deleteEstoque(estoqueId, userId);
+    res.status(200).json({response});
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while deleting the stock and its products.", errorMessage: error });
+  }
 }
