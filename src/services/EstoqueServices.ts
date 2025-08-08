@@ -54,3 +54,13 @@ export const getEstoqueById = async (estoqueId: string, userId: string) => {
 
   return estoque.estoques;
 }
+
+export const changeEstoqueName = async (estoqueId: string, name: string, userId: string) => {
+  const [estoque] = await db.select().from(estoques)
+    .innerJoin(estoqueUsers, eq(estoques.id, estoqueId))
+    .where(and(eq(estoques.id, estoqueId), eq(estoqueUsers.userId, userId)));
+
+  await db.update(estoques).set({ name }).where(eq(estoques.id, estoque.estoques.id));
+
+  return estoque;
+}
