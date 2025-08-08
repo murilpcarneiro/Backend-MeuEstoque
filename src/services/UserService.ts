@@ -13,7 +13,7 @@ export const createUser = async (name: string, email: string, password: string) 
     email,
     password: hash,
   }).returning();
-  const token = jwt.sign({id: user.id}, JWT_SECRET, {expiresIn: '1h'});
+  const token = jwt.sign({id: user.id, name: user.name}, JWT_SECRET, {expiresIn: '1h'});
   return {user, token}
 }
 
@@ -28,7 +28,7 @@ export const loginUser = async (email: string, password: string) => {
     throw new Error('Invalid password');
   }
 
-  const token = jwt.sign({id: user.id}, JWT_SECRET, {expiresIn: '1h'});
+  const token = jwt.sign({id: user.id, name: user.name}, JWT_SECRET, {expiresIn: '1h'});
   return {user, token};
 }
 
