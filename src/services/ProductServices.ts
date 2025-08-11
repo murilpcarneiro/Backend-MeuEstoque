@@ -1,4 +1,6 @@
 import { db } from "db/config/db";
+import { eq } from "drizzle-orm";
+import { estoqueUsers } from "models/Estoque";
 import { produtos } from "models/Product";
 
 export const createNewProduct = async (name: string, image: string | null, barcode: string | null, price: number, quantity: number, minStock: number, estoqueId: string) => {
@@ -13,4 +15,14 @@ export const createNewProduct = async (name: string, image: string | null, barco
   }).returning();
 
   return { product };
+}
+
+export const getAllUserProducts = async (userId: string) => {
+  const result = await db
+  .select()
+  .from(produtos)
+  .innerJoin(estoqueUsers, eq(produtos.estoqueId, estoqueUsers.estoqueId))
+  .where(eq(estoqueUsers.userId, userId));
+
+  return { products: result.map((row) => row.produtos) };
 }
