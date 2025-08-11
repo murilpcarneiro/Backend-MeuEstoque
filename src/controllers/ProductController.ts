@@ -91,3 +91,19 @@ export const updateProductInfo = async (req: Request, res: Response) => {
     res.status(500).json({ error: "An error occurred while updating product information." });
   }
 }
+
+export const deleteProduct = async (req: Request, res: Response) => {
+  const { productId } = req.params;
+  const userId = getUserIdFromToken(req.headers.authorization?.split(" ")[1] || "");
+
+  if (!productId || !userId) {
+    return res.status(400).json({ error: "Product ID and User ID are required." });
+  }
+
+  try {
+    await ProductService.deleteProduct(productId, userId);
+    res.status(204).json({ message: "Product deleted successfully." });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while deleting the product." });
+  }
+}

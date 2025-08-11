@@ -84,3 +84,19 @@ export const updateProductInfo = async (productId: string, updates: Partial<{ na
 
   return { product: updatedProduct[0] };
 }
+
+export const deleteProduct = async (productId: string, userId: string) => {
+  const product = await db
+    .select()
+    .from(produtos)
+    .innerJoin(estoqueUsers, eq(produtos.estoqueId, estoqueUsers.estoqueId))
+    .where(and(eq(produtos.id, productId), eq(estoqueUsers.userId, userId)))
+    .limit(1);
+
+  if (product.length === 0) {
+    throw new Error("Product not found or user not authorized");
+  }
+
+  await db.delete(produtos).where(eq(produtos.id, productId));
+  return { message: "Product deleted successfully" };
+}
