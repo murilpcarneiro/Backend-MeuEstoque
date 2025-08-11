@@ -74,3 +74,20 @@ export const getProductInfo = async (req: Request, res: Response) => {
     res.status(500).json({ error: "An error occurred while fetching product information." });
   }
 }
+
+export const updateProductInfo = async (req: Request, res: Response) => {
+  const { productId } = req.params;
+  const userId = getUserIdFromToken(req.headers.authorization?.split(" ")[1] || "");
+  const updates = req.body;
+
+  if (!productId || !userId) {
+    return res.status(400).json({ error: "Product ID and User ID are required." });
+  }
+
+  try {
+    const { product } = await ProductService.updateProductInfo(productId, updates, userId);
+    res.status(200).json({ product });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while updating product information." });
+  }
+}

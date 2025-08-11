@@ -63,3 +63,24 @@ export const getProductInfo = async (productId: string, userId: string) => {
 
   return {product: result.produtos};
 }
+
+export const updateProductInfo = async (productId: string, updates: Partial<{ name: string; image: string | null; barcode: string | null; price: number; quantity: number; minStock: number }>, userId: string) => {
+  const product = await db
+    .select()
+    .from(produtos)
+    .innerJoin(estoqueUsers, eq(produtos.estoqueId, estoqueUsers.estoqueId))
+    .where(and(eq(produtos.id, productId), eq(estoqueUsers.userId, userId)))
+    .limit(1);
+
+  if (product.length === 0) {
+    throw new Error("Product not found or user not authorized");
+  }
+
+  const updatedProduct = await db
+    .update(produtos)
+    .set(updates)
+    .where(eq(produtos.id, productId))
+    .returning();
+
+  return { product: updatedProduct[0] };
+}
