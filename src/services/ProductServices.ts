@@ -49,3 +49,17 @@ export const getAllProductsByEstoqueId = async (estoqueId: string, userId: strin
 
   return { products: result.map((row) => row.produtos) };
 }
+
+export const getProductInfo = async (productId: string, userId: string) => {
+  const [result] = await db
+    .select()
+    .from(produtos)
+    .innerJoin(estoqueUsers, eq(produtos.estoqueId, estoqueUsers.estoqueId))
+    .where(and(eq(produtos.id, productId), eq(estoqueUsers.userId, userId)));
+
+  if (!result) {
+    throw new Error("Product not found or user not authorized");
+  }
+
+  return {product: result.produtos};
+}
