@@ -14,6 +14,10 @@ export const createNewProduct = async (name: string, image: string | null, barco
     estoqueId
   }).returning();
 
+  if(!product) {
+    throw new Error("Failed to create product");
+  }
+
   return { product };
 }
 
@@ -23,6 +27,10 @@ export const getAllUserProducts = async (userId: string) => {
   .from(produtos)
   .innerJoin(estoqueUsers, eq(produtos.estoqueId, estoqueUsers.estoqueId))
   .where(eq(estoqueUsers.userId, userId));
+
+  if(result.length === 0) {
+    throw new Error("No products found");
+  }
 
   return { products: result.map((row) => row.produtos) };
 }
@@ -34,6 +42,10 @@ export const getAllProductsByEstoqueId = async (estoqueId: string, userId: strin
     .from(produtos)
     .innerJoin(estoqueUsers, eq(produtos.estoqueId, estoqueUsers.estoqueId))
     .where(and(eq(produtos.estoqueId, estoqueId), eq(estoqueUsers.userId, userId)));
+
+  if (result.length === 0) {
+    throw new Error("No products found for this estoque");
+  }
 
   return { products: result.map((row) => row.produtos) };
 }
