@@ -42,3 +42,19 @@ export const getAllUserProducts = async (req: Request, res: Response) => {
     res.status(500).json({ error: error });
   }
 }
+
+export const getAllProductsByEstoqueId = async (req: Request, res: Response) => {
+  const { estoqueId } = req.params;
+  const userId = getUserIdFromToken(req.headers.authorization?.split(" ")[1] || "");
+
+  if (!estoqueId || !userId) {
+    return res.status(400).json({ error: "Estoque ID and User ID are required." });
+  }
+
+  try {
+    const { products } = await ProductService.getAllProductsByEstoqueId(estoqueId, userId);
+    res.status(200).json({ products });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while fetching products." });
+  }
+}

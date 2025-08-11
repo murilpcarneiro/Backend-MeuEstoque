@@ -1,5 +1,5 @@
 import { db } from "db/config/db";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { estoqueUsers } from "models/Estoque";
 import { produtos } from "models/Product";
 
@@ -23,6 +23,17 @@ export const getAllUserProducts = async (userId: string) => {
   .from(produtos)
   .innerJoin(estoqueUsers, eq(produtos.estoqueId, estoqueUsers.estoqueId))
   .where(eq(estoqueUsers.userId, userId));
+
+  return { products: result.map((row) => row.produtos) };
+}
+
+
+export const getAllProductsByEstoqueId = async (estoqueId: string, userId: string) => {
+  const result = await db
+    .select()
+    .from(produtos)
+    .innerJoin(estoqueUsers, eq(produtos.estoqueId, estoqueUsers.estoqueId))
+    .where(and(eq(produtos.estoqueId, estoqueId), eq(estoqueUsers.userId, userId)));
 
   return { products: result.map((row) => row.produtos) };
 }
