@@ -107,3 +107,38 @@ export const deleteProduct = async (req: Request, res: Response) => {
     res.status(500).json({ error: "An error occurred while deleting the product." });
   }
 }
+
+export const incrementProductQuantity = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const userId = getUserIdFromToken(req.headers.authorization?.split(" ")[1] || "");
+  const { quantity } = req.body;
+
+  if (!id || !userId || quantity === undefined) {
+    return res.status(400).json({ error: "Product ID, User ID, and quantity are required." });
+  }
+
+  try {
+    const { product } = await ProductService.incrementProductQuantity(id, quantity, userId);
+    res.status(200).json({ product });
+  } catch (error) {
+    console.error("Error incrementing product quantity:", error);
+    res.status(500).json({ error: "An error occurred while incrementing product quantity." });
+  }
+}
+
+export const decrementProductQuantity = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const userId = getUserIdFromToken(req.headers.authorization?.split(" ")[1] || "");
+  const { quantity } = req.body;
+
+  if (!id || !userId || quantity === undefined) {
+    return res.status(400).json({ error: "Product ID, User ID, and quantity are required." });
+  }
+
+  try {
+    const { product } = await ProductService.decrementProductQuantity(id, quantity, userId);
+    res.status(200).json({ product });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while decrementing product quantity." });
+  }
+}

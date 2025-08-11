@@ -100,3 +100,49 @@ export const deleteProduct = async (productId: string, userId: string) => {
   await db.delete(produtos).where(eq(produtos.id, productId));
   return { message: "Product deleted successfully" };
 }
+
+export const incrementProductQuantity = async (productId: string, quantity: number, userId: string) => {
+  const product = await db
+    .select()
+    .from(produtos)
+    .innerJoin(estoqueUsers, eq(produtos.estoqueId, estoqueUsers.estoqueId))
+    .where(and(eq(produtos.id, productId), eq(estoqueUsers.userId, userId)))
+    .limit(1);
+
+  if (product.length === 0) {
+    throw new Error("Product not found or user not authorized");
+  }
+
+  const currentQuantity = product[0].produtos.quantity;
+
+  const updatedProduct = await db
+    .update(produtos)
+    .set({ quantity: currentQuantity + Number(quantity) })
+    .where(eq(produtos.id, productId))
+    .returning();
+
+  return { product: updatedProduct[0] };
+}
+
+export const decrementProductQuantity = async (productId: string, quantity: number, userId: string) => {
+  const product = await db
+    .select()
+    .from(produtos)
+    .innerJoin(estoqueUsers, eq(produtos.estoqueId, estoqueUsers.estoqueId))
+    .where(and(eq(produtos.id, productId), eq(estoqueUsers.userId, userId)))
+    .limit(1);
+
+  if (product.length === 0) {
+    throw new Error("Product not found or user not authorized");
+  }
+
+  const currentQuantity = product[0].produtos.quantity;
+
+  const updatedProduct = await db
+    .update(produtos)
+    .set({ quantity: currentQuantity - Number(quantity) })
+    .where(eq(produtos.id, productId))
+    .returning();
+
+  return { product: updatedProduct[0] };
+}
