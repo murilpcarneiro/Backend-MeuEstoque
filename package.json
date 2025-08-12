@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "description": "A RESTful API for managing a restaurant, built with Express, Typescript, and PostgreSQL",
   "scripts": {
-    "start": "tsx src/index.ts",
+    "start": "tsx dist/index.js",
     "dev": "tsx --watch src/index.ts",
     "build": "rimraf dist && tsup src/index.ts --format cjs,esm --dts --minify"
   },
