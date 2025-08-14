@@ -29,7 +29,7 @@ export const createEstoque = async(req: Request, res: Response) => {
     const { estoque } = await EstoqueService.createNewEstoque(name, userId);
     res.status(201).json({ id: estoque.id, name: estoque.name, codigo: estoque.codigo });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while creating the stock.", errorMessage: error });
+    res.status(500).json({ error });
   }
 }
 
@@ -49,7 +49,7 @@ export const joinEstoque = async(req: Request, res: Response) => {
     const { estoque } = await EstoqueService.joinEstoque(codigo, userId);
     res.status(200).json({ message: "Acesso concedido ao estoque", estoque:{ id: estoque.id, name: estoque.name, codigo: estoque.codigo } });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error });
   }
 }
 
@@ -64,7 +64,7 @@ export const getUserEstoques = async(req: Request, res: Response) => {
     const { estoques } = await EstoqueService.getUserEstoques(userId);
     res.status(200).json({ estoques });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while fetching user stocks.", errorMessage: error });
+    res.status(500).json({ error });
   }
 }
 
@@ -80,7 +80,7 @@ export const getEstoqueById = async(req: Request, res: Response) => {
     const estoque = await EstoqueService.getEstoqueById(estoqueId, userId)
     res.status(200).json({ estoque: { id: estoque.id, name: estoque.name, codigo: estoque.codigo } });
   } catch (error) {
-    res.status(404).json({ error: "Estoque not found." });
+    res.status(404).json({ error });
   }
 }
 
@@ -105,7 +105,7 @@ export const changeEstoqueName = async (req: Request, res: Response) => {
     const {estoques} = await EstoqueService.changeEstoqueName(estoqueId, name, userId);
     res.status(200).json({ message: "Estoque name updated successfully.", estoque: { id: estoques.id, name } });
   } catch (error: any) {
-    res.status(500).json({ error: "An error occurred while changing the stock name.", errorMessage: error });
+    res.status(500).json({ error });
   }
 }
 
@@ -125,6 +125,6 @@ export const deleteEstoque = async (req: Request, res: Response) => {
     const response = await EstoqueService.deleteEstoque(estoqueId, userId);
     res.status(200).json({response});
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while deleting the stock and its products.", errorMessage: error });
+    res.status(500).json({ error });
   }
 }

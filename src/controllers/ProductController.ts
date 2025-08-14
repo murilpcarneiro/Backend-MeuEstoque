@@ -24,7 +24,7 @@ export const createNewProduct = async (req: Request, res: Response) => {
     const { product } = await ProductService.createNewProduct(name, image, barcode, price, quantity, minStock, estoqueId);
     res.status(201).json({ product });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while creating the product." });
+    res.status(500).json({ error });
   }
 }
 
@@ -39,7 +39,7 @@ export const getAllUserProducts = async (req: Request, res: Response) => {
     const { products } = await ProductService.getAllUserProducts(userId);
     res.status(200).json({ products });
   } catch (error) {
-    res.status(500).json({ error: error });
+    res.status(500).json({ error });
   }
 }
 
@@ -55,7 +55,7 @@ export const getAllProductsByEstoqueId = async (req: Request, res: Response) => 
     const { products } = await ProductService.getAllProductsByEstoqueId(estoqueId, userId);
     res.status(200).json({ products });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while fetching products." });
+    res.status(500).json({ error });
   }
 }
 
@@ -71,7 +71,7 @@ export const getProductInfo = async (req: Request, res: Response) => {
     const product = await ProductService.getProductInfo(productId, userId);
     res.status(200).json({ product });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while fetching product information." });
+    res.status(500).json({ error });
   }
 }
 
@@ -88,7 +88,7 @@ export const updateProductInfo = async (req: Request, res: Response) => {
     const { product } = await ProductService.updateProductInfo(productId, updates, userId);
     res.status(200).json({ product });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while updating product information." });
+    res.status(500).json({ error });
   }
 }
 
@@ -104,7 +104,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
     await ProductService.deleteProduct(productId, userId);
     res.status(204).json({ message: "Product deleted successfully." });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while deleting the product." });
+    res.status(500).json({ error });
   }
 }
 
@@ -122,7 +122,7 @@ export const incrementProductQuantity = async (req: Request, res: Response) => {
     res.status(200).json({ product });
   } catch (error) {
     console.error("Error incrementing product quantity:", error);
-    res.status(500).json({ error: "An error occurred while incrementing product quantity." });
+    res.status(500).json({ error });
   }
 }
 
@@ -139,6 +139,6 @@ export const decrementProductQuantity = async (req: Request, res: Response) => {
     const { product } = await ProductService.decrementProductQuantity(id, quantity, userId);
     res.status(200).json({ product });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while decrementing product quantity." });
+    res.status(500).json({ error });
   }
 }
