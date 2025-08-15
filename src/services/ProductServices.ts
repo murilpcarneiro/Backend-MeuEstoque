@@ -28,10 +28,6 @@ export const getAllUserProducts = async (userId: string) => {
   .innerJoin(estoqueUsers, eq(produtos.estoqueId, estoqueUsers.estoqueId))
   .where(eq(estoqueUsers.userId, userId));
 
-  if(result.length === 0) {
-    throw new Error("No products found");
-  }
-
   return { products: result.map((row) => row.produtos) };
 }
 
