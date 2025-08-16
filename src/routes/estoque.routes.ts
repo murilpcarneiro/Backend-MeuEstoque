@@ -1,9 +1,11 @@
+import { getAllProductsByEstoqueId } from "controllers/ProductController";
 import express from "express";
 import { changeEstoqueName, createEstoque, deleteEstoque, getEstoqueById, getUserEstoques, joinEstoque } from "../controllers/EstoqueController";
 
 const estoqueRouter = express.Router();
 estoqueRouter.post("/", createEstoque);
 estoqueRouter.get("/", getUserEstoques);
+estoqueRouter.get("/:estoqueId/products", getAllProductsByEstoqueId);
 estoqueRouter.get("/:estoqueId", getEstoqueById);
 estoqueRouter.put("/:estoqueId", changeEstoqueName);
 estoqueRouter.delete("/:estoqueId", deleteEstoque)
