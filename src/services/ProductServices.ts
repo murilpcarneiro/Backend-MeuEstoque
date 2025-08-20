@@ -130,6 +130,10 @@ export const decrementProductQuantity = async (productId: string, quantity: numb
 
   const currentQuantity = product[0].produtos.quantity;
 
+  if(currentQuantity - Number(quantity) < 0) {
+    throw new Error("Insufficient quantity to decrement");
+  }
+
   const updatedProduct = await db
     .update(produtos)
     .set({ quantity: currentQuantity - Number(quantity) })
